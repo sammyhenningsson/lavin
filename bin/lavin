@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH <<  File.expand_path("../lib", __dir__)
+require 'lavin'
+
+module Lavin
+  class Script
+    def self.run(file)
+      if file.nil?
+        exit_with_usage(msg: "No file or directory given")
+      elsif File.file?(file)
+        $LOAD_PATH << "."
+        new(file).run
+      elsif Dir.exist?(file)
+        $LOAD_PATH << file
+        files = Dir.children(file)
+        new(*files).run
+      else
+        exit_with_usage(msg: "File or directory #{file.inspect} does not exist")
+      end
+    end
+
+    def self.usage
+      puts "\nUsage: #{$PROGRAM_NAME} PATH_TO_DIRECTORY_OR_FILE"
+    end
+
+    def self.exit_with_usage(msg: nil, status: 1)
+      puts msg if msg
+      usage
+      exit(status)
+    end
+
+    attr_reader :files
+
+    def initialize(*files)
+      @files = files
+    end
+
+    def run
+      files.each { |file| require file }
+
+      Lavin::Runner.new.start
+    end
+  end
+
+  if (ARGV & ["-h", "--help"]).size.positive?
+    Script.exit_with_usage(status: 0)
+  else
+    Script.run(ARGV.shift)
+  end
+end

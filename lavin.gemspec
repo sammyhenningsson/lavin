@@ -29,6 +29,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "async", "~> 2.2"
+  spec.add_dependency "async-http"
 
   spec.add_development_dependency "debug"
   spec.add_development_dependency "standard"

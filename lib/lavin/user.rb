@@ -28,7 +28,7 @@ module Lavin
     end
 
     def user_name
-      "##{user_index}_#{name}"
+      "#{name}##{user_index}"
     end
   end
 end

@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-require "lavin/version"
+require 'lavin/version'
+require 'lavin/error'
 require 'lavin/runner'
-
-module Lavin
-  class Error < StandardError; end
-  # Your code goes here...
-end
-

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'lavin/step'
+require 'lavin/client'
 
 module Lavin
   module Worker
@@ -30,7 +31,17 @@ module Lavin
       base.extend(ClassMethods)
     end
 
+    attr_reader :client
     attr_writer :index
+
+    def initialize(**kwargs)
+      super(**kwargs)
+      @client = Client.new(config[:base_url])
+    end
+
+    def cleanup
+      client&.close
+    end
 
     def run
       self.class.before.call.then { Runner.yield } if self.class.before
@@ -40,13 +51,13 @@ module Lavin
       self.class.after.call.then { Runner.yield } if self.class.after
     end
 
+    private
+
     def run_step
       current_step = steps[step_index]
       self.index += 1
       current_step&.run(context: self)
     end
-
-    private
 
     def steps
       self.class.steps

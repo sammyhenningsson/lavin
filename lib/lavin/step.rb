@@ -16,15 +16,13 @@ module Lavin
       end
     end
 
-    def call(context: nil)
-      if context
-        context.instance_exec(&block)
-      else
-        block.call
-      end
-    rescue StandarError => error
+    def call(context:)
+      context.instance_exec(&block)
+      # Report Success!
+    rescue => error
       puts "Caught an error: #{error.message}"
-      # What to do here?
+      puts error.backtrace
+      # Report Failure!
     end
   end
 end

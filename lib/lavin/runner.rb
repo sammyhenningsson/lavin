@@ -6,6 +6,12 @@ require "async"
 module Lavin
   class Runner
     class Entry
+      class DepletedError < Lavin::Error
+        def initialize(msg = nil)
+          super(msg || "Depleted")
+        end
+      end
+
       attr_reader :persona, :name
       attr_accessor :count
 
@@ -20,7 +26,7 @@ module Lavin
       end
 
       def get
-        raise "Depleted" unless present?
+        raise DepletedError unless present?
 
         self.count -= 1
         persona
@@ -49,12 +55,17 @@ module Lavin
 
           user_index = spawned_users
           annotation = "User: #{persona.config[:name]} ##{user_index}"
-          task.async(annotation:) { |t| persona.new(user_index:).run }
+          task.async(annotation:) do |user_task|
+            user = persona.new(user_index:)
+            user.run
+          ensure
+            user.cleanup
+          end
         end
       end
-      # @task.reactor.print_hierarchy
     rescue StandardError => error
       puts "Failed to run tasks: #{error.message}"
+    ensure
       stop
     end
 
@@ -80,19 +91,12 @@ module Lavin
     def next_persona
       self.index += 1
 
-      # print_status
       entry = remaining[index % remaining.size]
       if entry.present?
         entry.get
       elsif remaining.any?(&:present?)
         next_persona
       end
-    end
-
-    def print_status
-      puts "\nindex: #{index}"
-      puts "spawned_users: #{spawned_users}"
-      puts remaining.to_h { |entry| [entry.name, entry.count] }
     end
   end
 end

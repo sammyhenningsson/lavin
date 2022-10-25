@@ -3,11 +3,12 @@
 module Lavin
   module UserConfig
     DEFAULT = {
-      name: "",
+      name: nil,
       description: "",
       enabled: true,
       iterations: 1,
-      user_count: 1
+      user_count: 1,
+      base_url: nil
     }.freeze
 
     module ClassMethods
@@ -43,7 +44,7 @@ module Lavin
     end
 
     def name
-      config[:name]
+      config[:name] || self.class.to_s
     end
 
     def description
