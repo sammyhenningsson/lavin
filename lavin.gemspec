@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = "A framework for loadtesting sites."
   spec.homepage      = "https://github.com/sammyhenningsson/lavin"
   spec.license       = "MIT"
-  spec.required_ruby_version = ">= 2.4.0"
+  spec.required_ruby_version = ">= 3.0.3"
 
   spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
 
@@ -28,9 +28,10 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  # Uncomment to register a new dependency of your gem
-  # spec.add_dependency "example-gem", "~> 1.0"
+  spec.add_dependency "async", "~> 2.2"
+
   spec.add_development_dependency "debug"
+  spec.add_development_dependency "standard"
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html

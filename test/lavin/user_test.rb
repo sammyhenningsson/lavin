@@ -5,7 +5,7 @@ require "lavin/user"
 
 module Lavin
   class User
-    class UserTest < Minitest::Test
+    class UserTest < TestCase
       def test_that_users_inheritng_from_the_base_class_get_configuration
         user_class = Class.new(User)
 

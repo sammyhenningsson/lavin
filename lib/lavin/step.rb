@@ -2,24 +2,28 @@
 
 module Lavin
   class Step
-    attr_reader :block
-    attr_accessor :repeat
+    attr_reader :user, :block, :repeat
 
     def initialize(repeat: 1, &block)
       @repeat = repeat
       @block = block
     end
 
-    def run
+    def run(context: nil)
       repeat.times do
-        call
-        # Fiber.yield
+        call(context:)
+        Runner.yield
       end
     end
 
-    def call
-      block.call
-    rescue StandarError => _e
+    def call(context: nil)
+      if context
+        context.instance_exec(&block)
+      else
+        block.call
+      end
+    rescue StandarError => error
+      puts "Caught an error: #{error.message}"
       # What to do here?
     end
   end

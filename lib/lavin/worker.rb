@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "lavin/step"
+require 'lavin/step'
 
 module Lavin
   module Worker
@@ -33,19 +33,17 @@ module Lavin
     attr_writer :index
 
     def run
-      # self.class.before.call.then { Fiber.yield } if self.class.before
-      self.class.before&.call
+      self.class.before.call.then { Runner.yield } if self.class.before
 
       run_step until finished?
 
-      # self.class.after.call.then { Fiber.yield } if self.class.after
-      self.class.after&.call
+      self.class.after.call.then { Runner.yield } if self.class.after
     end
 
     def run_step
       current_step = steps[step_index]
       self.index += 1
-      current_step&.run
+      current_step&.run(context: self)
     end
 
     private

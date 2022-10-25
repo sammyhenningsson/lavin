@@ -3,8 +3,11 @@
 module Lavin
   module UserConfig
     DEFAULT = {
-      user_count: 1,
-      iterations: -1
+      name: "",
+      description: "",
+      enabled: true,
+      iterations: 1,
+      user_count: 1
     }.freeze
 
     module ClassMethods
@@ -22,6 +25,10 @@ module Lavin
           end
         end
       end
+
+      def enabled?
+        config[:enabled]
+      end
     end
 
     def self.included(base)
@@ -30,9 +37,17 @@ module Lavin
 
     attr_reader :config
 
-    def initialize(...)
+    def initialize(**kwargs)
       @config = self.class.config
-      super
+      super(**kwargs)
+    end
+
+    def name
+      config[:name]
+    end
+
+    def description
+      config[:description]
     end
   end
 end

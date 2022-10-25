@@ -1,0 +1,6 @@
+StringLiterals:
+  Enabled: false
+Naming/RescuedExceptionsVariableName:
+  Enabled: false
+Style/RescueStandardError:
+  Enabled: false
