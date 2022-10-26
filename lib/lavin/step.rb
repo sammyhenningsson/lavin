@@ -20,7 +20,7 @@ module Lavin
       context.instance_exec(&block)
       # Report Success!
     rescue => error
-      puts "Caught an error: #{error.message}"
+      puts "Caught an error - #{error.class}: #{error.message}"
       puts error.backtrace
       # Report Failure!
     end

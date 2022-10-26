@@ -40,6 +40,7 @@ module Lavin
       files.each { |file| require file }
 
       Lavin::Runner.new.start
+      Statistics.show
     end
   end
 

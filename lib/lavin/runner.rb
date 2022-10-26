@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require "lavin/user"
-require "async"
+require 'async'
+require 'lavin/user'
+require 'lavin/statistics'
 
 module Lavin
   class Runner
@@ -49,6 +50,9 @@ module Lavin
     end
 
     def start
+      Statistics.reset
+
+      start = Time.now
       @task = Async(annotation: "Main") do |task|
         spawn(count: total_users) do |persona|
           next unless persona
@@ -66,6 +70,7 @@ module Lavin
     rescue StandardError => error
       puts "Failed to run tasks: #{error.message}"
     ensure
+      Statistics.duration = Time.now - start
       stop
     end
 
