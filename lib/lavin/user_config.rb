@@ -3,8 +3,6 @@
 module Lavin
   module UserConfig
     DEFAULT = {
-      name: nil,
-      description: "",
       enabled: true,
       iterations: 1,
       user_count: 1,
@@ -27,8 +25,24 @@ module Lavin
         end
       end
 
+      def name(value = :no_value_given)
+        if value == :no_value_given
+          @name ||= to_s
+        else
+          @name = value
+        end
+      end
+
+      def description(value = :no_value_given)
+        if value == :no_value_given
+          @description ||= ""
+        else
+          @description = value
+        end
+      end
+
       def enabled?
-        config[:enabled]
+        !!config[:enabled]
       end
     end
 
@@ -44,11 +58,11 @@ module Lavin
     end
 
     def name
-      config[:name] || self.class.to_s
+      self.class.name
     end
 
     def description
-      config[:description]
+      self.class.description
     end
   end
 end

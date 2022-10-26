@@ -2,19 +2,20 @@
 
 $LOAD_PATH <<  File.expand_path("../lib", __dir__)
 require 'lavin'
+require 'optionparser'
 
 module Lavin
   class Script
-    def self.run(file)
+    def self.run(file, web_ui: true)
       if file.nil?
         exit_with_usage(msg: "No file or directory given")
       elsif File.file?(file)
         $LOAD_PATH << "."
-        new(file).run
+        new(file, web_ui:).run
       elsif Dir.exist?(file)
         $LOAD_PATH << file
         files = Dir.children(file)
-        new(*files).run
+        new(*files, web_ui:).run
       else
         exit_with_usage(msg: "File or directory #{file.inspect} does not exist")
       end
@@ -30,23 +31,32 @@ module Lavin
       exit(status)
     end
 
-    attr_reader :files
+    attr_reader :files, :web_ui
 
-    def initialize(*files)
+    def initialize(*files, web_ui: true)
       @files = files
+      @web_ui = web_ui
     end
 
     def run
       files.each { |file| require file }
 
-      Lavin::Runner.new.start
-      Statistics.show
+      if web_ui
+        require 'lavin/web_server'
+        Lavin::WebServer.run!
+      else
+        runner = Lavin::Runner.new
+        runner.start
+        runner.wait
+        Statistics.show
+      end
     end
   end
 
   if (ARGV & ["-h", "--help"]).size.positive?
     Script.exit_with_usage(status: 0)
   else
-    Script.run(ARGV.shift)
+    web_ui = ARGV.delete("--no-web").nil?
+    Script.run(ARGV.shift, web_ui:)
   end
 end

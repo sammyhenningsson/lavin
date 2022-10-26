@@ -1,0 +1,17 @@
+<div>
+  <h1 class="mt-16 text-center text-2xl"><strong class="text-4xl">Lavin</strong> load testing</h1>
+
+  <div class="mt-32 flex flex-col items-center">
+    <% if personas.empty? %>
+      <p class="text-lg">No configration found please restart the server with a path to a directory containing the configuration!</p>
+    <% else %>
+      <h2 class="text-lg">Configuration</h2>
+      <% personas.each do |persona| %>
+        <%= erb :user_config, locals: {persona: persona} %>
+      <% end %>
+      <form action="/start" method="post" class="mt-16">
+        <input type=submit value="Start" class="px-8 py-4 shadow-slate-900 shadow-lg rounded bg-amber-700 hover:bg-amber-800 text-center">
+      </form>
+    <% end %>
+  </div>
+</div>

@@ -2,8 +2,8 @@ require 'lavin/user'
 
 class WebUser < Lavin::User
   description "User making http requests"
-  user_count 10
-  iterations 10
+  user_count 1
+  iterations 2
   base_url "http://localhost:4567/"
 
   step do
@@ -11,10 +11,10 @@ class WebUser < Lavin::User
     get("#{resource}/step1")
   end
 
-  step do
-    get("#{resource}/step2")
-    get("#{resource}/step2")
-  end
+  # step do
+  #   get("#{resource}/step2")
+  #   get("#{resource}/step2")
+  # end
 
   def resource
     @resource ||= user_name.tr('#', '_')

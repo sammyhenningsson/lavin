@@ -1,0 +1,25 @@
+<div>
+  <h1 class="mt-16 text-center text-2xl">Edit <%= persona.name %></h1>
+  <div class="flex flex-col items-center">
+    <form action="/update_config" method="post" class="mt-16">
+      <% persona.config.each do |key, value| %>
+        <input type="hidden" name="persona" value="<%= persona.name %>">
+        <% if value == true || value == false %>
+          <div class="mt-2">
+            <label for="<%= key %>"><%= key.to_s.capitalize %></label>
+            <input type="checkbox" id="<%= key %>" name="<%= key %>" class="float-right" <%= "checked" if value %>></br>
+          </div>
+        <% else %>
+          <div class="mt-2">
+            <label for="<%= key %>"><%= key.to_s.capitalize %></label></br>
+            <input type="<%= input_type_for(value) %>" id="<%= key %>" name="<%= key %>" class="rounded p-2" value="<%= value %>"></br>
+          </div>
+        <% end %>
+      <% end %>
+      <div class="mt-8 flex flex-row gap-x-4">
+        <a href="/" class="p-2 grow bg-slate-500 shadow-slate-900 shadow-lg rounded hover:bg-slate-600 text-center">Cancel</a>
+        <input type=submit value="Update" class="p-2 grow shadow-slate-900 shadow-lg rounded bg-blue-500 hover:bg-blue-600 text-center">
+      </div>
+    </form>
+  </div>
+</div>

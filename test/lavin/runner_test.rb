@@ -26,7 +26,7 @@ module Lavin
         runner = Runner.new
         spawned = []
         runner.spawn(count: 6) do |persona|
-          spawned << persona.config[:name]
+          spawned << persona.name
         end
 
         assert_equal(
