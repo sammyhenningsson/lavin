@@ -37,8 +37,12 @@ module Lavin
     attr_reader :personas, :total_users, :remaining
     attr_accessor :spawned_users, :index
 
-    def self.yield
-      Async::Task.current.yield if Async::Task.current?
+    class << self
+      attr_accessor :current
+
+      def yield
+        Async::Task.current.yield if Async::Task.current?
+      end
     end
 
     def initialize(personas: nil)
@@ -52,6 +56,7 @@ module Lavin
     def start
       Statistics.reset
 
+      self.class.current = self
       start = Time.now
       @task = Async(annotation: "Main") do |task|
         spawn(count: total_users) do |persona|
@@ -60,6 +65,7 @@ module Lavin
           user_index = spawned_users
           annotation = "User: #{persona.config[:name]} ##{user_index}"
           task.async(annotation:) do |user_task|
+            user_task.sleep 10
             user = persona.new(user_index:)
             user.run
           ensure
@@ -67,11 +73,13 @@ module Lavin
           end
         end
       end
+      Statistics.duration = Time.now - start
     rescue StandardError => error
       puts "Failed to run tasks: #{error.message}"
-    ensure
-      Statistics.duration = Time.now - start
       stop
+      raise
+    ensure
+      self.class.current = nil
     end
 
     def wait

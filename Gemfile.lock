@@ -4,6 +4,7 @@ PATH
     lavin (0.1.0)
       async (~> 2.2)
       async-http
+      sinatra
 
 GEM
   remote: https://rubygems.org/
@@ -37,6 +38,8 @@ GEM
       reline (>= 0.3.0)
     json (2.6.2)
     minitest (5.15.0)
+    mustermann (3.0.0)
+      ruby2_keywords (~> 0.0.1)
     parallel (1.22.1)
     parser (3.1.2.1)
       ast (~> 2.4.1)
@@ -47,6 +50,9 @@ GEM
     protocol-http2 (0.14.2)
       protocol-hpack (~> 1.4)
       protocol-http (~> 0.18)
+    rack (2.2.4)
+    rack-protection (3.0.2)
+      rack
     rainbow (3.1.1)
     rake (13.0.6)
     regexp_parser (2.6.0)
@@ -69,9 +75,16 @@ GEM
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     ruby-progressbar (1.11.0)
+    ruby2_keywords (0.0.5)
+    sinatra (3.0.2)
+      mustermann (~> 3.0)
+      rack (~> 2.2, >= 2.2.4)
+      rack-protection (= 3.0.2)
+      tilt (~> 2.0)
     standard (1.16.1)
       rubocop (= 1.35.1)
       rubocop-performance (= 1.14.3)
+    tilt (2.0.11)
     timers (4.3.5)
     traces (0.7.0)
     unicode-display_width (2.3.0)

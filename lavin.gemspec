@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "async", "~> 2.2"
   spec.add_dependency "async-http"
+  spec.add_dependency "sinatra"
 
   spec.add_development_dependency "debug"
   spec.add_development_dependency "standard"
