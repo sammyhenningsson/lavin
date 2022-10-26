@@ -31,42 +31,24 @@ module Lavin
       internet.close
     end
 
-    def get(url, headers: DEFAULT_HEADERS)
-      request(:get, url:, headers:)
-    end
-
-    def head(url, headers: DEFAULT_HEADERS)
-      request(:head, url:, headers:)
-    end
-
-    def post(url, headers: DEFAULT_HEADERS, body: nil)
-      request(:post, url:, headers:, body:)
-    end
-
-    def put(url, headers: DEFAULT_HEADERS, body: nil)
-      request(:put, url:, headers:, body:)
-    end
-
-    def patch(url, headers: DEFAULT_HEADERS, body: nil)
-      request(:patch, url:, headers:, body:)
-    end
-
-    def delete(url, headers: DEFAULT_HEADERS)
-      request(:delete, url:, headers:)
-    end
-
-    private
-
     def request(method, url:, headers:, body: nil)
+      headers = DEFAULT_HEADERS.merge(headers || {})
       if body.is_a? Hash
         body = JSON.dump(body)
         headers["Content-Type"] = "application/json"
       end
 
       url = File.join(base_url, url) if base_url && !url.start_with?(/https?:/)
+      start_time = Time.now
       response = internet.send(method, url, headers, body)
+      duration = Time.now - start_time
+      status = response.status
+      headers = response.headers
+      body = response.read
       self.request_count += 1
-      [response.status, response.headers, response.read]
+      Statistics.register_request(method:, url:, status:, duration:)
+
+      {status:, headers:, body: body}
     end
   end
 end
