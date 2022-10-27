@@ -43,6 +43,28 @@ module Lavin
       def yield
         Async::Task.current.yield if Async::Task.current?
       end
+
+      def start
+        new.start
+      end
+
+      def start_async
+        self.current = Thread.new { new.start }
+      rescue StandardError => error
+        puts "Failed to run in thread: #{error.message}"
+        current.join
+        current = nil
+        raise
+      end
+
+      def stop
+        current.kill
+        self.current = nil
+      end
+
+      def running?
+        !!current
+      end
     end
 
     def initialize(personas: nil)
@@ -54,31 +76,30 @@ module Lavin
     end
 
     def start
-      Statistics.reset
+      Statistics.meassure { create_async_task }
+    rescue StandardError => error
+      puts "Failed to run tasks: #{error.message}"
+      raise
+    ensure
+      stop
+    end
 
-      self.class.current = self
-      start = Time.now
+    def create_async_task
       @task = Async(annotation: "Main") do |task|
         spawn(count: total_users) do |persona|
           next unless persona
 
           user_index = spawned_users
           annotation = "User: #{persona.name} ##{user_index}"
-          task.async(annotation:) do
+          task.async(annotation:) do |user_task|
             user = persona.new(user_index:)
+            user_task.sleep(rand(10)) # FIXME
             user.run
           ensure
             user.cleanup
           end
         end
       end
-      Statistics.duration = Time.now - start
-    rescue StandardError => error
-      puts "Failed to run tasks: #{error.message}"
-      stop
-      raise
-    ensure
-      self.class.current = nil
     end
 
     def wait

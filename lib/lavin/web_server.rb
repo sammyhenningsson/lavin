@@ -31,13 +31,25 @@ module Lavin
     end
 
     get '/' do
+      Lavin::Runner.stop if Lavin::Runner.running?
+
       erb :index, locals: { personas: Lavin::User.all_personas }
     end
 
     post '/start' do
       Statistics.reset
-      Lavin::Runner.new.start
-      redirect to('/')
+      Lavin::Runner.start_async
+      redirect to('/statistics')
+    end
+
+    get '/statistics' do
+      puts "GET /statistics"
+      stats = Statistics.stats
+      if stats.empty? && !Lavin::Runner.running?
+        redirect to('/')
+      else
+        erb :statistics, locals: {stats:}
+      end
     end
 
     get '/edit' do
