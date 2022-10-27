@@ -1,13 +1,15 @@
-<div class="bg-white dark:bg-slate-800 w-1/5 rounded-lg mt-8 px-6 py-8 ring-1 ring-slate-900/5 shadow-slate-900 shadow-lg">
-  <h3 class="text-center text-slate-900 dark:text-white text-base font-medium tracking-tight"><%= persona.name %></h3>
-  <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm"><%= persona.description %></p>
-  <ul class="mt-2">
-    <% persona.config.each do |key, value| %>
-      <li>
-        <span class="text-slate-500 dark:text-slate-400"><%= key %></span>
-        <span class="text-slate-500 dark:text-slate-400 float-right"><%= value%></span>
-      </li>
-    <% end %>
-  </ul>
-  <a href="/edit?persona=<%= persona.name %>" class="mt-2 text-sm float-right bg-slate-500 p-2 shadow-slate-900 shadow-4xl rounded hover:bg-slate-600">Edit</a>
+<div class="bg-white dark:bg-slate-800 w-full rounded-lg mt-8 px-6 py-8 shadow-slate-900 shadow-lg">
+    <h3 class="text-center text-slate-900 dark:text-white text-2xl"><%= persona.name %></h3>
+    <p class="text-center text-slate-500 dark:text-slate-400 mt-2 text-sm"><%= persona.description %></p>
+    <ul class="mt-8">
+      <% persona.config.each do |key, value| %>
+        <li>
+          <span class="text-slate-500 dark:text-slate-300"><%= key %></span>
+          <span class="text-slate-500 dark:text-slate-300 float-right"><%= value%></span>
+        </li>
+      <% end %>
+    </ul>
+    <div class="mt-8 flex flex-row justify-end">
+    <a href="/edit?persona=<%= persona.name %>" class="mt-4 text-sm bg-slate-500 p-2 shadow-slate-900 shadow-4xl rounded hover:bg-slate-600">Edit</a>
+  </div>
 </div>

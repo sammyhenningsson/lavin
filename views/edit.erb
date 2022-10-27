@@ -1,18 +1,18 @@
-<div>
-  <h1 class="mt-16 text-center text-2xl">Edit <%= persona.name %></h1>
-  <div class="flex flex-col items-center">
+<div class="flex flex-col items-center">
+  <h1 class="mt-32 text-center text-2xl">Edit <%= persona.name %></h1>
+  <div class="w-1/5 bg-white dark:bg-slate-800 rounded-lg mt-8 px-6 py-4 shadow-slate-900 shadow-lg">
     <form action="/update_config" method="post" class="mt-16">
       <% persona.config.each do |key, value| %>
         <input type="hidden" name="persona" value="<%= persona.name %>">
         <% if value == true || value == false %>
-          <div class="mt-2">
-            <label for="<%= key %>"><%= key.to_s.capitalize %></label>
+          <div class="my-4">
+            <label for="<%= key %>" class="text-slate-500 dark:text-slate-300"><%= key.to_s.capitalize %></label>
             <input type="checkbox" id="<%= key %>" name="<%= key %>" class="float-right" <%= "checked" if value %>></br>
           </div>
         <% else %>
           <div class="mt-2">
-            <label for="<%= key %>"><%= key.to_s.capitalize %></label></br>
-            <input type="<%= input_type_for(value) %>" id="<%= key %>" name="<%= key %>" class="rounded p-2" value="<%= value %>"></br>
+            <label for="<%= key %>" class="text-slate-500 dark:text-slate-300"><%= key.to_s.capitalize %></label></br>
+            <input type="<%= input_type_for(value) %>" id="<%= key %>" name="<%= key %>" class="rounded p-2 w-full" value="<%= value %>"></br>
           </div>
         <% end %>
       <% end %>
