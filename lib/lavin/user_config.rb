@@ -4,8 +4,8 @@ module Lavin
   module UserConfig
     DEFAULT = {
       enabled: true,
-      iterations: 1,
       user_count: 1,
+      iterations: 1,
       base_url: nil
     }.freeze
 

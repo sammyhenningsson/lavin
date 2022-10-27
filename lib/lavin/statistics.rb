@@ -9,17 +9,25 @@ module Lavin
 
       def meassure
         reset
-        start = Time.now
-        yield.tap { self.duration = Time.now - start }
+        data[:start] = Time.now
+        yield.tap { data[:duration] = Time.now - data[:start] }
       end
 
       def reset
         self.data = {
-          duration: 0,
+          start: nil,
+          duration: nil,
           total_requests: 0,
           steps: [],
           requests: Hash.new { |h, k| h[k] = [] }
         }
+      end
+
+      def stop
+        return if data.frozen?
+
+        data[:duration] = (Time.now - data[:start])
+        data.freeze
       end
 
       def total_requests
@@ -27,19 +35,17 @@ module Lavin
       end
 
       def duration
-        data[:duration]
-      end
+        return data[:duration] if data[:duration]
 
-      def duration=(duration)
-        data[:duration] = duration
+        Time.now - data[:start] if data[:start]
       end
 
       def register_request(method:, url:, status:, duration:)
-        puts "registering request.."
         data[:total_requests] += 1
         key = [method, url]
-        success = status < 500
-        data[:requests][key] << {status:, duration:, success:}
+        result = {status:, duration:}
+        result[:failure] = true if status > 499
+        data[:requests][key] << result
       end
 
       def register_step
@@ -75,12 +81,11 @@ module Lavin
         Stats.new(
           duration: duration,
           total_requests: total_requests,
-          rate: duration.zero? ? 0: format("%.2f", total_requests / duration),
+          rate: duration ? format("%.2f", total_requests / duration) : 0,
           requests: requests
         ).tap do |stats|
           # FIXME remove!
           puts "Calculated stats in #{Time.now - time}s"
-          p stats.to_h
         end
       end
 

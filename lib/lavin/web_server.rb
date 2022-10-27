@@ -31,8 +31,6 @@ module Lavin
     end
 
     get '/' do
-      Lavin::Runner.stop if Lavin::Runner.running?
-
       erb :index, locals: { personas: Lavin::User.all_personas }
     end
 
@@ -45,10 +43,11 @@ module Lavin
     get '/statistics' do
       puts "GET /statistics"
       stats = Statistics.stats
-      if stats.empty? && !Lavin::Runner.running?
+      running = Lavin::Runner.running?
+      if stats.empty? && !running
         redirect to('/')
       else
-        erb :statistics, locals: {stats:}
+        erb :statistics, locals: {stats:, running:}
       end
     end
 

@@ -38,7 +38,7 @@ module Lavin
     attr_accessor :spawned_users, :index
 
     class << self
-      attr_accessor :current
+      attr_accessor :thread
 
       def yield
         Async::Task.current.yield if Async::Task.current?
@@ -49,21 +49,30 @@ module Lavin
       end
 
       def start_async
-        self.current = Thread.new { new.start }
+        self.thread = Thread.new do
+          new.start
+          stop
+          exit
+        end
       rescue StandardError => error
         puts "Failed to run in thread: #{error.message}"
-        current.join
-        current = nil
+        thread.join
+        thread = nil
         raise
       end
 
       def stop
-        current.kill
-        self.current = nil
+        Statistics.stop
+        thread&.kill
+        self.thread = nil
       end
 
       def running?
-        !!current
+        return false unless thread
+        return true if %w[run sleep].include? thread.status
+
+        stop
+        false
       end
     end
 
@@ -93,7 +102,6 @@ module Lavin
           annotation = "User: #{persona.name} ##{user_index}"
           task.async(annotation:) do |user_task|
             user = persona.new(user_index:)
-            user_task.sleep(rand(10)) # FIXME
             user.run
           ensure
             user.cleanup
