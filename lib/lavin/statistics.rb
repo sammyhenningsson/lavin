@@ -14,13 +14,7 @@ module Lavin
       end
 
       def reset
-        self.data = {
-          start: nil,
-          duration: nil,
-          total_requests: 0,
-          steps: [],
-          requests: Hash.new { |h, k| h[k] = [] }
-        }
+        self.data = new_data
       end
 
       def stop
@@ -104,7 +98,28 @@ module Lavin
 
       private
 
-      attr_accessor :data
+      def data
+        synchronize { @data ||= new_data }
+      end
+
+      def data=(values)
+        synchronize { @data = values }
+      end
+
+      def synchronize(&block)
+        @mutex ||= Thread::Mutex.new
+        @mutex.synchronize(&block)
+      end
+
+      def new_data
+        {
+          start: nil,
+          duration: nil,
+          total_requests: 0,
+          steps: [],
+          requests: Hash.new { |h, k| h[k] = [] }
+        }
+      end
 
       def show_summary(values)
         puts <<~RESULT

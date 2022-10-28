@@ -41,7 +41,6 @@ module Lavin
     end
 
     get '/statistics' do
-      puts "GET /statistics"
       stats = Statistics.stats
       running = Lavin::Runner.running?
       if stats.empty? && !running
