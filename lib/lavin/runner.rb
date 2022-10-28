@@ -101,7 +101,7 @@ module Lavin
           user_index = spawned_users
           annotation = "User: #{persona.name} ##{user_index}"
           task.async(annotation:) do |user_task|
-            user = persona.new(user_index:)
+            user = persona.new(user_index:, task: user_task)
             user.run
           ensure
             user.cleanup

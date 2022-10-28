@@ -32,6 +32,11 @@ module Lavin
 
     attr_writer :index
 
+    def initialize(**kwargs)
+      @task = kwargs.delete(:task)
+      super(**kwargs)
+    end
+
     def run
       self.class.before.call.then { Runner.yield } if self.class.before
 
@@ -41,6 +46,12 @@ module Lavin
     end
 
     private
+
+    attr_reader :task
+
+    def sleep(seconds)
+      task.sleep seconds
+    end
 
     def run_step
       current_step = steps[step_index]
