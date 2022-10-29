@@ -6,23 +6,14 @@ require 'optionparser'
 
 module Lavin
   class Script
-    def self.run(file, web_ui: true)
-      if file.nil?
-        exit_with_usage(msg: "No file or directory given")
-      elsif File.file?(file)
-        $LOAD_PATH << "."
-        new(file, web_ui:).run
-      elsif Dir.exist?(file)
-        $LOAD_PATH << file
-        files = Dir.children(file)
-        new(*files, web_ui:).run
-      else
-        exit_with_usage(msg: "File or directory #{file.inspect} does not exist")
-      end
+    def self.run(*files, web_ui: true)
+      exit_with_usage(msg: "No file or directory given") if files.empty?
+      files.keep_if { |file| File.exists? file }
+      new(*files, web_ui:).run
     end
 
     def self.usage
-      puts "\nUsage: #{$PROGRAM_NAME} PATH_TO_DIRECTORY_OR_FILE"
+      puts "\nUsage: #{$PROGRAM_NAME} PATH_TO_DIRECTORY_OR_FILE [*PATH_TO_DIRECTORY_OR_FILE]"
     end
 
     def self.exit_with_usage(msg: nil, status: 1)
@@ -39,7 +30,15 @@ module Lavin
     end
 
     def run
-      files.each { |file| require file }
+      files.each do |file|
+        if Dir.exists? file
+          $LOAD_PATH << file unless $LOAD_PATH.include? file
+          Dir.children(file).each { |file| require file }
+        else
+          $LOAD_PATH << "." unless $LOAD_PATH.include? "."
+          require file
+        end
+      end
 
       if web_ui
         require 'lavin/web_server'
@@ -57,6 +56,6 @@ module Lavin
     Script.exit_with_usage(status: 0)
   else
     web_ui = ARGV.delete("--no-web").nil?
-    Script.run(ARGV.shift, web_ui:)
+    Script.run(*ARGV, web_ui:)
   end
 end
