@@ -19,7 +19,7 @@ module Lavin
 
       def test_that_it_runs
         result = []
-        user_class = Class.new(User) do
+        user_class = Class.new(TestUser) do
           iterations 2
 
           before { result << :before }

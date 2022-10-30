@@ -2,6 +2,7 @@
 
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "lavin"
+require "lavin/user"
 
 require "minitest/autorun"
 require "debug"
@@ -16,5 +17,21 @@ class TestCase < Minitest::Test
     Lavin::User.instance_variable_set(:@all_personas, Set.new)
     Lavin::Statistics.reset
     super
+  end
+end
+
+class MockClient
+  def initialize(*) = nil
+  def close = nil
+
+  def request(_method, **_kwargs)
+    [200, {}, "mock_data"]
+  end
+end
+
+class TestUser < Lavin::User
+  def initialize(**kwargs)
+    client = MockClient.new
+    super(**kwargs.merge(client:))
   end
 end

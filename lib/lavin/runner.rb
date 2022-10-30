@@ -57,7 +57,7 @@ module Lavin
       rescue StandardError => error
         puts "Failed to run in thread: #{error.message}"
         thread.join
-        thread = nil
+        self.thread = nil
         raise
       end
 

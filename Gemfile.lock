@@ -3,8 +3,8 @@ PATH
   specs:
     lavin (0.1.0)
       async (~> 2.2)
-      async-http
-      sinatra
+      async-http (~> 0.59)
+      sinatra (~> 3.0)
 
 GEM
   remote: https://rubygems.org/
@@ -93,11 +93,11 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  debug
+  debug (~> 1.6)
   lavin!
   minitest (~> 5.0)
   rake (~> 13.0)
-  standard
+  standard (~> 1.16)
 
 BUNDLED WITH
    2.2.20

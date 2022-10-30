@@ -28,6 +28,10 @@ module Lavin
         data[:total_requests]
       end
 
+      def total_steps
+        data[:step_summary][:count]
+      end
+
       def duration
         return data[:duration] if data[:duration]
 
@@ -42,8 +46,13 @@ module Lavin
         data[:requests][key] << result
       end
 
-      def register_step
-        # TODO
+      def register_step(user:, step_name:, failure: nil)
+        data[:step_summary][:count] += 1
+        data[:step_summary][:success] += 1 unless failure
+        data[:step_summary][:failure] += 1 if failure
+        key = [user, step_name]
+        data[:steps][key][:success] += 1 unless failure
+        data[:steps][key][:failure] += 1 if failure
       end
 
       def stats
@@ -68,7 +77,7 @@ module Lavin
             statuses: statuses.tally,
             avg_duration: avg_duration,
             min_duration: min_duration,
-            max_duration: max_duration,
+            max_duration: max_duration
           }
         end
 
@@ -76,6 +85,8 @@ module Lavin
           duration: duration,
           total_requests: total_requests,
           rate: duration ? format("%.2f", total_requests / duration) : 0,
+          step_summary: data[:step_summary],
+          steps: data[:steps],
           requests: requests
         ).tap do |stats|
           # FIXME remove!
@@ -87,6 +98,14 @@ module Lavin
         values = stats
 
         show_summary(values)
+
+        show_steps(values) do |(user, step), hash|
+          format(
+            "%-24<user_step>s %8<success>d %8<failure>d",
+            user_step: "#{user}.#{step}",
+            **hash
+          )
+        end
 
         show_table(values) do |request_values|
           format(
@@ -116,7 +135,12 @@ module Lavin
           start: nil,
           duration: nil,
           total_requests: 0,
-          steps: [],
+          step_summary: {
+            count: 0,
+            success: 0,
+            failure: 0
+          },
+          steps: Hash.new { |h, k| h[k] = {success: 0, failure: 0} },
           requests: Hash.new { |h, k| h[k] = [] }
         }
       end
@@ -127,9 +151,25 @@ module Lavin
           Lavin results:
           Test ran for #{values.duration}s
           Total number of requests: #{values.total_requests}
-          Rate: #{format("%.2f", values.total_requests/values.duration)} rps
+          Rate: #{format("%.2f", values.total_requests / values.duration)} rps
+
+          Total number of steps: #{values.total_steps}
+          Step success rate: #{format("%.2f %%", 100 * values.successful_steps.to_f / values.total_steps)}
 
         RESULT
+      end
+
+      def show_steps(values)
+        puts format(
+          "%-24<user_step>s %8<success>s %8<failure>s",
+          user_step: "Steps",
+          success: "Success",
+          failure: "Failure"
+        )
+        divider = "-" * 42
+        puts divider
+        values.each_step { |step_values| puts yield step_values }
+        puts "#{divider}\n\n"
       end
 
       def show_table(values)

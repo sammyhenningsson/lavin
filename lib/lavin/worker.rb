@@ -21,8 +21,9 @@ module Lavin
         @steps ||= []
       end
 
-      def step(**options, &block)
-        steps << Step.new(**options, &block)
+      def step(name: nil, **options, &block)
+        name ||= "Step##{steps.size + 1}"
+        steps << Step.new(user: self, name:, **options, &block)
       end
     end
 

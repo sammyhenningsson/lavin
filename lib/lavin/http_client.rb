@@ -9,7 +9,7 @@ module Lavin
 
     def initialize(**kwargs)
       super(**kwargs)
-      @client = Client.new(config[:base_url])
+      @client = kwargs.fetch(:client) { Client.new(config[:base_url]) }
     end
 
     def cleanup

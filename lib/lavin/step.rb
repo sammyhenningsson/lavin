@@ -1,10 +1,13 @@
 # frozen_string_literal: true
+#
 
 module Lavin
   class Step
-    attr_reader :user, :block, :repeat
+    attr_reader :name, :user, :block, :repeat
 
-    def initialize(repeat: 1, &block)
+    def initialize(name:, user:, repeat: 1, &block)
+      @name = name
+      @user = user
       @repeat = repeat
       @block = block
     end
@@ -18,11 +21,11 @@ module Lavin
 
     def call(context:)
       context.instance_exec(&block)
-      # Report Success!
+      Statistics.register_step(user: user.name, step_name: name)
     rescue => error
       puts "Caught an error - #{error.class}: #{error.message}"
       puts error.backtrace
-      # Report Failure!
+      Statistics.register_step(user: user.name, step_name: name, failure: error.message)
     end
   end
 end
