@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'lavin/step'
+require 'lavin/hook'
 
 module Lavin
   module Worker
@@ -8,13 +9,13 @@ module Lavin
       def before(&block)
         return @before unless block
 
-        @before = block
+        @before = Hook.new(user: self, &block)
       end
 
       def after(&block)
         return @after unless block
 
-        @after = block
+        @after = Hook.new(user: self, &block)
       end
 
       def steps
@@ -39,11 +40,11 @@ module Lavin
     end
 
     def run
-      self.class.before.call.then { Runner.yield } if self.class.before
+      self.class.before.run(context: self).then { Runner.yield } if self.class.before
 
       run_step until finished?
 
-      self.class.after.call.then { Runner.yield } if self.class.after
+      self.class.after.run(context: self).then { Runner.yield } if self.class.after
     end
 
     private

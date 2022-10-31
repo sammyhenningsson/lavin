@@ -17,7 +17,7 @@ module Lavin
     }.freeze
 
     attr_reader :internet, :base_url
-    attr_accessor :request_count, :cookie
+    attr_accessor :request_count, :cookie, :report_statistics
 
     def initialize(base_url = nil)
       raise NoCurrentAsyncTaskError unless Async::Task.current?
@@ -26,6 +26,7 @@ module Lavin
       @base_url = base_url
       @request_count = 0
       @cookie = nil
+      @report_statistics = true
     end
 
     def close
@@ -41,7 +42,7 @@ module Lavin
 
       status, headers, body = process(response)
 
-      Statistics.register_request(method:, url:, status:, duration:)
+      Statistics.register_request(method:, url:, status:, duration:) if report_statistics
 
       {status:, headers:, body: body}
     end
