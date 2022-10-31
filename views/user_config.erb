@@ -1,6 +1,6 @@
 <div class="mt-8 px-6 py-8 bg-white dark:bg-slate-800 rounded-lg shadow-slate-900 shadow-lg">
     <h3 class="text-center text-slate-900 dark:text-white text-2xl"><%= persona.name %></h3>
-    <p class="text-center text-slate-500 dark:text-slate-400 mt-2 text-sm"><%= persona.description %></p>
+    <p class="text-center truncate text-slate-500 dark:text-slate-400 mt-2 text-sm"><%= persona.description %></p>
     <ul class="mt-8">
       <% persona.config.each do |key, value| %>
         <li>

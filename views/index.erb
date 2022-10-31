@@ -2,16 +2,18 @@
   <% if personas.empty? %>
     <p class="text-lg">No configration found please restart the server with a path to a directory containing the configuration!</p>
   <% else %>
-    <h2 class="text-2xl">Configuration</h2>
-    <div class="grid gap-x-8 gap-y-4 grid-cols-3">
-      <% personas.each do |persona| %>
-        <%= erb :user_config, locals: {persona: persona} %>
-      <% end %>
-    </div>
-    <div class="my-16 w-1/5">
+    <div class="w-1/5">
       <form action="/start" method="post">
         <input type=submit value="Start" class="py-3 shadow-slate-900 shadow-lg rounded bg-amber-700 hover:bg-amber-800 text-xl text-center w-full">
       </form>
+    </div>
+    <h2 class="mt-16 text-2xl">Configuration</h2>
+    <div class="w-5/6 flex flex-row flex-wrap gap-x-8 gap-y-4 justify-center">
+      <% personas.each do |persona| %>
+        <div class="w-1/4">
+          <%= erb :user_config, locals: {persona: persona} %>
+        </div>
+      <% end %>
     </div>
   <% end %>
 </div>
