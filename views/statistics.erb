@@ -10,6 +10,22 @@
         <span class="text-amber-700 animate-pulse <%= running ? "" : "invisible" %>">Running</span>
       </div>
     </div>
+    <table class="mt-8 w-1/4 table-auto text-slate-500 dark:text-slate-300">
+      <thead>
+        <tr>
+          <th class="text-left">Steps</th>
+          <th class="text-left">Success</th>
+          <th class="text-right">Failure</th>
+        </tr>
+      </thead>
+      <% stats.each_step do |(user, step), step_stats| %>
+        <tr class="border-b border-dashed hover:border-solid border-slate-700">
+          <td class="text-left"><%= "#{user}.#{step}" %></td>
+          <td class="text-left"><%= step_stats[:success] %></td>
+          <td class="text-right"><%= step_stats[:failure] %></td>
+        </tr>
+      <% end %>
+    </table>
     <table class="mt-8 w-full overflow-y-scroll table-auto text-slate-500 dark:text-slate-300">
       <thead>
         <tr>
