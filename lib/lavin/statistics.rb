@@ -62,9 +62,11 @@ module Lavin
         requests = data[:requests].map do |(method, url), requests|
           durations = []
           statuses = []
+          failed_requests = 0
           requests.each do |request|
             durations << request[:duration]
             statuses << request[:status]
+            failed_requests += 1 if request[:failure]
           end
           min_duration = durations.min
           max_duration = durations.max
@@ -75,9 +77,10 @@ module Lavin
             url: url,
             requests: requests.size,
             statuses: statuses.tally,
-            avg_duration: avg_duration,
-            min_duration: min_duration,
-            max_duration: max_duration
+            failed_requests:,
+            avg_duration:,
+            min_duration:,
+            max_duration:
           }
         end
 

@@ -5,6 +5,13 @@ require 'async/http/internet'
 module Lavin
   class Client
     class Error < Lavin::Error; end
+
+    class ServerError < Error
+      def initialize(status)
+        super("Server responded with status: #{status}")
+      end
+    end
+
     class NoCurrentAsyncTaskError < Error
       def initialize(msg = nil)
         super(msg || "Trying to create a client outside of an Async task")

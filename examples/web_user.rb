@@ -1,16 +1,17 @@
 require 'lavin/user'
 
 class WebUser < Lavin::User
-  description "User making http requests"
+  description "A user making http requests"
   user_count 1000
   iterations 10
   base_url "http://localhost:4567/"
 
-  step do
-    get("#{name}/step1")
+  step(name: "create new account") do
+    post("/session")
   end
 
-  step do
-    get("#{name}/step2")
+  step(name: "book") do
+    get("/bookings")
+    post("/bookings/#{rand(100)}/confirm")
   end
 end

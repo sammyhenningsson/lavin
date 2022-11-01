@@ -1,7 +1,7 @@
 require 'lavin/user'
 
 class SlowUser < Lavin::User
-  description "User taking some random naps in between making requests"
+  description "A user taking some random naps in between making requests"
   user_count 5
   iterations 3
   base_url "http://localhost:4567/"
