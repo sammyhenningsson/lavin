@@ -2,7 +2,7 @@
   <div class="flex flex-col w-full h-full bg-white dark:bg-slate-800 px-16 pt-16 pb-8 text-slate-500 dark:text-slate-300">
     <div class="flex flex-row items">
       <div class="flex-grow">
-        <p>Duration: <%= format("%3fs",stats.duration) %></p>
+        <p>Duration: <%= format("%.3fs", stats.duration) %></p>
         <p>Total requests: <%= stats.total_requests%></p>
         <p>Rate: <%= stats.rate%> rps</p>
       </div>
@@ -10,7 +10,7 @@
         <span class="text-amber-700 animate-pulse <%= running ? "" : "invisible" %>">Running</span>
       </div>
     </div>
-    <div class="max-h-96 overflow-auto mt-8 w-full">
+    <div class=" w-full h-full overflow-auto mt-8">
       <table class="w-1/4 table-auto text-slate-500 dark:text-slate-300">
         <thead>
           <tr>
@@ -21,9 +21,9 @@
         </thead>
         <% stats.each_step do |(user, step), step_stats| %>
           <tr class="border-b border-dashed hover:border-solid border-slate-700">
-            <td class="text-left"><%= "#{user}.#{step}" %></td>
-            <td class="text-right"><%= step_stats[:success] %></td>
-            <td class="text-right"><%= step_stats[:failure] %></td>
+            <td class="text-left text-sm"><%= "#{user}.#{step}" %></td>
+            <td class="text-right text-sm"><%= step_stats[:success] %></td>
+            <td class="text-right text-sm"><%= step_stats[:failure] %></td>
           </tr>
         <% end %>
       </table>
@@ -33,6 +33,7 @@
             <th class="text-left">Method</th>
             <th class="text-left">URL</th>
             <th class="text-right">Requests</th>
+            <th class="text-right">Failed requests</th>
             <th class="text-right">Avg duration</th>
             <th class="text-right">Min duration</th>
             <th class="text-right">Max duration</th>
@@ -40,12 +41,13 @@
         </thead>
         <% stats.each_request do |request_stats| %>
           <tr class="border-b border-dashed hover:border-solid border-slate-700">
-            <td class="text-left"><%= request_stats[:method] %></td>
-            <td class="text-left"><%= request_stats[:url]%></td>
-            <td class="text-right"><%= request_stats[:requests]%></td>
-            <td class="text-right"><%= format("%8fs", request_stats[:avg_duration]) %></td>
-            <td class="text-right"><%= format("%8fs", request_stats[:min_duration]) %></td>
-            <td class="text-right"><%= format("%8fs", request_stats[:max_duration]) %></td>
+            <td class="text-left text-sm"><%= request_stats[:method] %></td>
+            <td class="text-left text-sm"><%= request_stats[:url]%></td>
+            <td class="text-right text-sm"><%= request_stats[:requests]%></td>
+            <td class="text-right text-sm"><%= request_stats[:failed_requests]%></td>
+            <td class="text-right text-sm"><%= format("%8fs", request_stats[:avg_duration]) %></td>
+            <td class="text-right text-sm"><%= format("%8fs", request_stats[:min_duration]) %></td>
+            <td class="text-right text-sm"><%= format("%8fs", request_stats[:max_duration]) %></td>
           </tr>
         <% end %>
       </table>
