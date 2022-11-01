@@ -22,7 +22,14 @@ class Mock
   private
 
   def status
-    params.fetch('status', 200).to_i
+    provided = params['status']
+    return given.to_i if provided
+
+    if rand(100) < 5
+      [500, 502, 503, 504].sample
+    else
+      200
+    end
   end
 
   def headers
