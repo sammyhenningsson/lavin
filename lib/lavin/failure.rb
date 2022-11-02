@@ -4,10 +4,12 @@ require 'lavin/error'
 
 module Lavin
   module Failure
-    class Error < Lavin::Error; end
-
     def failure(msg)
-      raise Error, msg
+      raise RecoverableError, msg
+    end
+
+    def failure!(msg)
+      raise IrrecoverableError, msg
     end
   end
 end

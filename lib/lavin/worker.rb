@@ -9,13 +9,13 @@ module Lavin
       def before(&block)
         return @before unless block
 
-        @before = Hook.new(user: self, &block)
+        @before = Hook.new(user: self, type: :before, &block)
       end
 
       def after(&block)
         return @after unless block
 
-        @after = Hook.new(user: self, &block)
+        @after = Hook.new(user: self, type: :after, &block)
       end
 
       def steps
@@ -40,12 +40,15 @@ module Lavin
     end
 
     def run
-      # catch(:interupt)
-      self.class.before.run(context: self).then { Runner.yield } if self.class.before
+      catch(:failure) do
+        self.class.before.run(context: self).then { Runner.yield } if self.class.before
 
-      run_step until finished?
+        run_step until finished?
+      end
 
-      self.class.after.run(context: self).then { Runner.yield } if self.class.after
+      catch(:failure) do
+        self.class.after.run(context: self).then { Runner.yield } if self.class.after
+      end
     end
 
     private

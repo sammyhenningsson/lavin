@@ -12,6 +12,7 @@ class WebUser < Lavin::User
 
   step(name: "book") do
     get("/bookings")
+    failure "failed to book" if rand(100) < 5
     post("/bookings/#{rand(100)}/confirm")
   end
 end

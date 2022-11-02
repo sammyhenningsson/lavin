@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-#
+
+require 'lavin/error'
 
 module Lavin
   class Step
@@ -22,6 +23,9 @@ module Lavin
     def call(context:)
       context.instance_exec(&block)
       Statistics.register_step(user: user.name, step_name: name)
+    rescue IrrecoverableError => error
+      Statistics.register_step(user: user.name, step_name: name, failure: error.message)
+      throw :failure
     rescue => error
       Statistics.register_step(user: user.name, step_name: name, failure: error.message)
     end

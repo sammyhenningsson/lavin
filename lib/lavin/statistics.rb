@@ -106,7 +106,7 @@ module Lavin
 
         show_steps(values) do |(user, step), hash|
           format(
-            "%-24<user_step>s %8<success>d %8<failure>d",
+            "%-48<user_step>s %8<success>d %8<failure>d",
             user_step: "#{user}.#{step}",
             **hash
           )
@@ -170,12 +170,12 @@ module Lavin
 
       def show_steps(values)
         puts format(
-          "\n%-24<user_step>s %8<success>s %8<failure>s",
+          "\n%-48<user_step>s %8<success>s %8<failure>s",
           user_step: "Steps",
           success: "Success",
           failure: "Failure"
         )
-        divider = "-" * 42
+        divider = "-" * 66
         puts divider
         values.each_step { |step_values| puts yield step_values }
         puts divider
