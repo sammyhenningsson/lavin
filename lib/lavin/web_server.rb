@@ -40,6 +40,11 @@ module Lavin
       redirect to('/statistics')
     end
 
+    post '/stop' do
+      Lavin::Runner.stop
+      redirect to('/statistics')
+    end
+
     get '/statistics' do
       stats = Statistics.stats
       running = Lavin::Runner.running?

@@ -62,9 +62,9 @@ module Lavin
       end
 
       def stop
-        Statistics.stop
         thread&.kill
         self.thread = nil
+        Statistics.stop
       end
 
       def running?

@@ -1,14 +1,21 @@
 <div class="mt-16 h-full flex-grow flex flex-col items-center">
   <div class="flex flex-col w-full h-full bg-white dark:bg-slate-800 px-16 pt-16 pb-8 text-slate-500 dark:text-slate-300">
-    <div class="flex flex-row items">
+    <div class="flex flex-row items-center">
       <div class="flex-grow">
         <p>Duration: <%= format("%.3fs", stats.duration) %></p>
         <p>Total requests: <%= stats.total_requests%></p>
         <p>Rate: <%= stats.rate%> rps</p>
       </div>
-      <div>
-        <span class="text-amber-700 animate-pulse <%= running ? "" : "invisible" %>">Running</span>
-      </div>
+      <% if running %>
+        <div class="">
+          <span class="text-amber-700 text-xl animate-pulse">Running</span>
+        </div>
+        <div class="ml-8 w-1/12">
+          <form action="/stop" method="post" class="mb-0">
+            <input type=submit value="Stop" class="px-4 py-2 shadow-slate-900 shadow-lg rounded bg-amber-700 hover:bg-amber-800 text-xl text-center w-full">
+          </form>
+        </div>
+      <% end %>
     </div>
     <div class=" w-full h-full overflow-auto mt-8">
       <table class="w-1/4 table-auto text-slate-500 dark:text-slate-300">
