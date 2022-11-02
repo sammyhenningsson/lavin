@@ -34,27 +34,17 @@
           </tr>
         <% end %>
       </table>
-      <table class="mt-8 w-full table-auto text-slate-500 dark:text-slate-300">
+      <table class="mt-8 w-1/2 table-auto text-slate-500 dark:text-slate-300">
         <thead>
           <tr>
-            <th class="text-left">Method</th>
-            <th class="text-left">URL</th>
-            <th class="text-right">Requests</th>
-            <th class="text-right">Failed requests</th>
-            <th class="text-right">Avg duration</th>
-            <th class="text-right">Min duration</th>
-            <th class="text-right">Max duration</th>
+            <th class="text-left">Failure</th>
+            <th class="text-left">Count</th>
           </tr>
         </thead>
-        <% stats.each_request do |request_stats| %>
+        <% stats.each_failure do |message, count| %>
           <tr class="border-b border-dashed hover:border-solid border-slate-700">
-            <td class="text-left text-sm"><%= request_stats[:method] %></td>
-            <td class="text-left text-sm"><%= request_stats[:url]%></td>
-            <td class="text-right text-sm"><%= request_stats[:requests]%></td>
-            <td class="text-right text-sm"><%= request_stats[:failed_requests]%></td>
-            <td class="text-right text-sm"><%= format("%8fs", request_stats[:avg_duration]) %></td>
-            <td class="text-right text-sm"><%= format("%8fs", request_stats[:min_duration]) %></td>
-            <td class="text-right text-sm"><%= format("%8fs", request_stats[:max_duration]) %></td>
+            <td class="text-left text-sm"><%= message %></td>
+            <td class="text-left text-sm"><%= count%></td>
           </tr>
         <% end %>
       </table>
@@ -62,7 +52,7 @@
   </div>
   <div class="w-full h-1/6 text-center py-10 object-center">
     <a href="/" class="bg-slate-500 p-2 shadow-slate-900 shadow-lg rounded hover:bg-slate-600">Back to start</a>
-    <a href="/failures" class="ml-4 bg-slate-500 p-2 shadow-slate-900 shadow-lg rounded hover:bg-slate-600">Failures</a>
+    <a href="/statistics" class="ml-4 bg-slate-500 p-2 shadow-slate-900 shadow-lg rounded hover:bg-slate-600">Statistics</a>
   </div>
 </div>
 <% if running %>

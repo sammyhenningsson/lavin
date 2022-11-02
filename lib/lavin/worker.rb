@@ -40,6 +40,7 @@ module Lavin
     end
 
     def run
+      # catch(:interupt)
       self.class.before.run(context: self).then { Runner.yield } if self.class.before
 
       run_step until finished?

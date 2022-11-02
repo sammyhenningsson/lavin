@@ -4,6 +4,7 @@ require "set"
 require "lavin/user_config"
 require "lavin/worker"
 require "lavin/http_client"
+require "lavin/failure"
 
 module Lavin
   class User
@@ -12,6 +13,7 @@ module Lavin
       subclass.include UserConfig
       subclass.include Worker
       subclass.include HttpClient
+      subclass.include Failure
       all_personas << subclass
     end
 

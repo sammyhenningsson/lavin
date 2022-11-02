@@ -23,8 +23,6 @@ module Lavin
       context.instance_exec(&block)
       Statistics.register_step(user: user.name, step_name: name)
     rescue => error
-      puts "Caught an error - #{error.class}: #{error.message}"
-      puts error.backtrace
       Statistics.register_step(user: user.name, step_name: name, failure: error.message)
     end
   end

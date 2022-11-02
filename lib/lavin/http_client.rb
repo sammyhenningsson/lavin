@@ -44,7 +44,7 @@ module Lavin
 
     def request(method, url:, headers:, body: nil)
       client.request(method, url:, headers:, body:).tap do |response|
-        raise ServerError, response[:status] if response[:status] > 499
+        raise Lavin::Client::ServerError, response[:status] if response[:status] > 499
       end
     end
   end

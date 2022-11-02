@@ -55,6 +55,16 @@ module Lavin
       end
     end
 
+    get '/failures' do
+      stats = Statistics.stats
+      running = Lavin::Runner.running?
+      if stats.empty? && !running
+        redirect to('/')
+      else
+        erb :failures, locals: {stats:, running:}
+      end
+    end
+
     get '/edit' do
       persona = find_persona
       raise Sinatra::NotFound unless persona

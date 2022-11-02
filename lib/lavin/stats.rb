@@ -2,15 +2,16 @@
 
 module Lavin
   class Stats
-    attr_reader :duration, :total_requests, :rate, :requests, :step_summary, :steps
+    attr_reader :duration, :total_requests, :rate, :requests, :step_summary, :steps, :failures
 
-    def initialize(duration:, total_requests:, rate:, requests: [], step_summary: {}, steps: [])
+    def initialize(duration:, total_requests:, rate:, requests: [], step_summary: {}, steps: [], failures: [])
       @duration = duration
       @total_requests = total_requests
       @rate = rate
       @requests = requests
       @step_summary = step_summary
       @steps = steps
+      @failures = failures
     end
 
     def empty?
@@ -24,7 +25,8 @@ module Lavin
         rate:,
         requests:,
         step_summary:,
-        steps:
+        steps:,
+        failures:
       }
     end
 
@@ -46,6 +48,10 @@ module Lavin
 
     def each_request(&block)
       requests.each(&block)
+    end
+
+    def each_failure(&block)
+      failures.each(&block)
     end
   end
 end

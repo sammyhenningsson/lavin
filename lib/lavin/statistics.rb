@@ -53,6 +53,7 @@ module Lavin
         key = [user, step_name]
         data[:steps][key][:success] += 1 unless failure
         data[:steps][key][:failure] += 1 if failure
+        data[:failures][failure.to_s] += 1 if failure
       end
 
       def stats
@@ -90,7 +91,8 @@ module Lavin
           rate: duration ? format("%.2f", total_requests / duration) : 0,
           step_summary: data[:step_summary],
           steps: data[:steps],
-          requests: requests
+          requests: requests,
+          failures: data[:failures]
         ).tap do |stats|
           # FIXME remove!
           puts "Calculated stats in #{Time.now - time}s"
@@ -115,6 +117,10 @@ module Lavin
             "%-6<method>s %-100<url>s %6<requests>d %12<avg_duration>fs %12<min_duration>fs %12<max_duration>fs",
             **request_values
           )
+        end
+
+        show_failures(values) do |message, count|
+          format("%-64<message>s %6<count>d", message:, count:)
         end
       end
 
@@ -144,7 +150,8 @@ module Lavin
             failure: 0
           },
           steps: Hash.new { |h, k| h[k] = {success: 0, failure: 0} },
-          requests: Hash.new { |h, k| h[k] = [] }
+          requests: Hash.new { |h, k| h[k] = [] },
+          failures: Hash.new { |h, k| h[k] = 0 }
         }
       end
 
@@ -158,13 +165,12 @@ module Lavin
 
           Total number of steps: #{values.total_steps}
           Step success rate: #{format("%.2f %%", 100 * values.successful_steps.to_f / values.total_steps)}
-
         RESULT
       end
 
       def show_steps(values)
         puts format(
-          "%-24<user_step>s %8<success>s %8<failure>s",
+          "\n%-24<user_step>s %8<success>s %8<failure>s",
           user_step: "Steps",
           success: "Success",
           failure: "Failure"
@@ -172,12 +178,12 @@ module Lavin
         divider = "-" * 42
         puts divider
         values.each_step { |step_values| puts yield step_values }
-        puts "#{divider}\n\n"
+        puts divider
       end
 
       def show_table(values)
         puts format(
-          "%-6<method>s %-100<url>s %-6<requests>s %12<avg_duration>s %12<min_duration>s %12<max_duration>s",
+          "\n%-6<method>s %-100<url>s %-6<requests>s %12<avg_duration>s %12<min_duration>s %12<max_duration>s",
           method: "Method",
           url: "URL",
           requests: "Requests",
@@ -189,6 +195,14 @@ module Lavin
         divider = "-" * 156
         puts divider
         values.each_request { |request_values| puts yield request_values }
+        puts divider
+      end
+
+      def show_failures(values)
+        puts format("\n%-64<message>s %6<count>s", message: "Failures", count: "Count")
+        divider = "-" * 71
+        puts divider
+        values.each_failure { |failures| puts yield failures }
         puts divider
       end
     end
