@@ -21,7 +21,12 @@ class TestCase < Minitest::Test
 end
 
 class MockClient
-  def initialize(*) = nil
+  attr_accessor :report_statistics
+
+  def initialize(*)
+    @report_statistics = true
+  end
+
   def close = nil
 
   def request(_method, **_kwargs)

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'lavin/error'
+
 module Lavin
   class Hook
     attr_reader :user, :block, :type
@@ -19,11 +21,11 @@ module Lavin
       report_statistics = context.client.report_statistics
       context.client.report_statistics = false
       context.instance_exec(&block)
-    rescue RecoverableError
+    rescue SuccessfulStep, RecoverableError
+    rescue SuccessfulUser, IrrecoverableError
+      throw :stop_user
     rescue => error
-      puts "Caught #{error.class} in #{type} hook: #{error.message}"
-      puts error.backtrace unless error.is_a? IrrecoverableError
-      throw :failure
+      puts "Exception in #{user.name}.#{type} block - #{error.class}: #{error.message}"
     ensure
       context.client.report_statistics = report_statistics
     end

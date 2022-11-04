@@ -6,4 +6,8 @@ module Lavin
   class RecoverableError < Error; end
 
   class IrrecoverableError < Error; end
+
+  class SuccessfulStep < Error; end
+
+  class SuccessfulUser < Error; end
 end

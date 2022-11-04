@@ -36,6 +36,156 @@ module Lavin
           result
         )
       end
+
+      def test_that_a_step_can_be_aborted_successfully
+        result = []
+        user_class = Class.new(TestUser) do
+          step(repeat: 2) do
+            result << :good1
+            success
+            result << :bad
+          end
+          step do
+            result << :good2
+          end
+        end
+
+        user = user_class.new
+        user.run
+
+        assert_equal(%i[good1 good1 good2], result)
+        assert_equal(3, Statistics.stats.successful_steps)
+        assert_equal(0, Statistics.stats.failed_steps)
+      end
+
+      def test_that_a_user_can_be_aborted_successfully
+        result = []
+        user_class = Class.new(TestUser) do
+          step(repeat: 2) do
+            result << :good1
+            success!
+            result << :bad
+          end
+          step do
+            result << :good2
+          end
+        end
+
+        user = user_class.new
+        user.run
+
+        assert_equal(%i[good1], result)
+        assert_equal(1, Statistics.stats.successful_steps)
+        assert_equal(0, Statistics.stats.failed_steps)
+      end
+
+      def test_that_a_step_can_be_aborted_with_failure
+        result = []
+        user_class = Class.new(TestUser) do
+          step(repeat: 2) do
+            result << :good1
+            failure "boom"
+            result << :bad
+          end
+          step do
+            result << :good2
+          end
+        end
+
+        user = user_class.new
+        user.run
+
+        assert_equal(%i[good1 good1 good2], result)
+        assert_equal(1, Statistics.stats.successful_steps)
+        assert_equal(2, Statistics.stats.failed_steps)
+      end
+
+      def test_that_a_user_can_be_aborted_with_failure
+        result = []
+        user_class = Class.new(TestUser) do
+          step(repeat: 2) do
+            result << :good1
+            failure! "boom"
+            result << :bad
+          end
+          step do
+            result << :good2
+          end
+        end
+
+        user = user_class.new
+        user.run
+
+        assert_equal(%i[good1], result)
+        assert_equal(0, Statistics.stats.successful_steps)
+        assert_equal(1, Statistics.stats.failed_steps)
+      end
+
+      def test_that_before_hook_can_start_steps
+        result = []
+        user_class = Class.new(TestUser) do
+          before do
+            result << :before1
+            success
+            result << :before2
+          end
+
+          step do
+            result << :step
+          end
+        end
+
+        user = user_class.new
+        user.run
+
+        assert_equal(%i[before1 step], result)
+        assert_equal(1, Statistics.stats.successful_steps)
+        assert_equal(0, Statistics.stats.failed_steps)
+      end
+
+      def test_that_before_hook_can_successfully_finish_user
+        result = []
+        user_class = Class.new(TestUser) do
+          before do
+            result << :before1
+            success!
+            result << :before2
+          end
+
+          step do
+            result << :step
+          end
+        end
+
+        user = user_class.new
+        user.run
+
+        assert_equal(%i[before1], result)
+        assert_equal(0, Statistics.stats.successful_steps)
+        assert_equal(0, Statistics.stats.failed_steps)
+      end
+
+      def test_that_before_hook_can_unsuccessfully_finish_user
+        result = []
+        user_class = Class.new(TestUser) do
+          before do
+            result << :before1
+            failure! "boom"
+            result << :before2
+          end
+
+          step do
+            result << :step
+          end
+        end
+
+        user = user_class.new
+        user.run
+
+        assert_equal(%i[before1], result)
+        assert_equal(0, Statistics.stats.successful_steps)
+        assert_equal(0, Statistics.stats.failed_steps)
+      end
     end
   end
 end

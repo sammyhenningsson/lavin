@@ -40,13 +40,13 @@ module Lavin
     end
 
     def run
-      catch(:failure) do
+      catch(:stop_user) do
         self.class.before.run(context: self).then { Runner.yield } if self.class.before
 
         run_step until finished?
       end
 
-      catch(:failure) do
+      catch(:stop_user) do
         self.class.after.run(context: self).then { Runner.yield } if self.class.after
       end
     end

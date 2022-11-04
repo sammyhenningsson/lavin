@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lavin (0.1.0)
+    lavin (0.3.0)
       async (~> 2.2)
       async-http (~> 0.59)
       sinatra (~> 3.0)

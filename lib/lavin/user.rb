@@ -5,6 +5,7 @@ require "lavin/user_config"
 require "lavin/worker"
 require "lavin/http_client"
 require "lavin/failure"
+require "lavin/success"
 
 module Lavin
   class User
@@ -14,6 +15,7 @@ module Lavin
       subclass.include Worker
       subclass.include HttpClient
       subclass.include Failure
+      subclass.include Success
       all_personas << subclass
     end
 

@@ -23,10 +23,14 @@ module Lavin
     def call(context:)
       context.instance_exec(&block)
       Statistics.register_step(user: user.name, step_name: name)
+    rescue SuccessfulStep, SuccessfulUser => error
+      Statistics.register_step(user: user.name, step_name: name)
+      throw :stop_user if error.is_a? SuccessfulUser
     rescue IrrecoverableError => error
       Statistics.register_step(user: user.name, step_name: name, failure: error.message)
-      throw :failure
+      throw :stop_user
     rescue => error
+      puts "Exception in #{user.name}.#{name} - #{error.class}: #{error.message}"
       Statistics.register_step(user: user.name, step_name: name, failure: error.message)
     end
   end
