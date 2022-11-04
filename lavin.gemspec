@@ -21,7 +21,8 @@ Gem::Specification.new do |spec|
 
   spec.executables   = ["lavin"]
   spec.require_paths = ["lib"]
-  spec.files         = Dir['lib/**/*rb']
+  spec.files         = Dir['lib/**/*rb'] \
+                     + Dir['views/**/*']
 
   spec.add_dependency "async", "~> 2.2"
   spec.add_dependency "async-http", "~> 0.59"
