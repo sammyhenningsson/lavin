@@ -2,6 +2,7 @@
 
 Lavin is a tool for testing how your website is handling load/traffic.
 It's based on the [Async](https://github.com/socketry/async) framework. This means it uses event driven IO and light weight Fibers.
+(Lavin means "avalanche" in swedish. I thought it was a nice and short suitable name. 😀)
 
 ## Installation
 
