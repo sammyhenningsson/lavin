@@ -23,7 +23,7 @@ class Mock
 
   def status
     provided = params['status']
-    return given.to_i if provided
+    return provided.to_i if provided
 
     if rand(100) < 5
       [500, 502, 503, 504].sample
@@ -47,6 +47,9 @@ class Mock
     @body ||= request.body.read
   end
 end
+
+set :bind, ENV["LISTEN_ADDRESS"] if ENV["LISTEN_ADDRESS"]
+set :port, ENV["LISTEN_PORT"] if ENV["LISTEN_PORT"]
 
 %i[get post put patch delete head].each do |method|
   send(method, /.*/) do
