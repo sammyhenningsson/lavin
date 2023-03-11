@@ -45,30 +45,33 @@ module Lavin
       end
 
       def start
-        new.start
+        new.tap(&:start)
       end
 
-      def start_async
-        self.thread = Thread.new do
-          new.start
-          stop
-          exit
-        end
-      rescue StandardError => error
+      def start_in_background
+        self.thread = Thread.new { start }
+      rescue => error
         puts "Failed to run in thread: #{error.message}"
         thread.join
         self.thread = nil
+        Statistics.stop
         raise
       end
 
       def stop
         thread&.kill
         self.thread = nil
+      end
+
+      def wait
+        thread&.join
+        self.thread = nil
         Statistics.stop
       end
 
       def running?
         return false unless thread
+        puts "Thread status: #{thread.status}"
         return true if %w[run sleep].include? thread.status
 
         stop
@@ -86,7 +89,7 @@ module Lavin
 
     def start
       Statistics.meassure { create_async_task }
-    rescue StandardError => error
+    rescue => error
       puts "Failed to run tasks: #{error.message}"
       raise
     ensure

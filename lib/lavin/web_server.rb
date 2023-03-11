@@ -36,12 +36,14 @@ module Lavin
 
     post '/start' do
       Statistics.reset
-      Lavin::Runner.start_async
+      Lavin::Runner.start_in_background
       redirect to('/statistics')
     end
 
     post '/stop' do
       Lavin::Runner.stop
+      Lavin::Runner.wait
+      Lavin::Statistics.stop
       redirect to('/statistics')
     end
 

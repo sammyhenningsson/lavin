@@ -42,11 +42,15 @@ module Lavin
 
       if web_ui
         require 'lavin/web_server'
-        Lavin::WebServer.run!
+        WebServer.run!
       else
-        runner = Lavin::Runner.new
-        runner.start
-        runner.wait
+        Signal.trap("INT") do
+          puts "\nInterupted! Stopping test\n"
+          Runner.stop if Runner.running?
+        end
+        Runner.start_in_background
+        Runner.wait
+        Statistics.stop
         Statistics.show
       end
     end

@@ -1,0 +1,6 @@
+- Rename Persona => user
+- Create a "User.build" function instead of ".new"??
+- Write documentation
+- Present number of successfull/failed requests (per User??)
+- Present status codes (per User??)
+

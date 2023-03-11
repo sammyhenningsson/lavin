@@ -12,6 +12,7 @@ class Mock
 
   def log(method)
     puts "#{method} #{request.path_info} #{params.inspect}"
+    puts "Accept: #{request.env["HTTP_ACCEPT"]}"
   end
 
   def response
