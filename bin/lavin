@@ -8,7 +8,7 @@ module Lavin
   class Script
     def self.run(*files, web_ui: true)
       exit_with_usage(msg: "No file or directory given") if files.empty?
-      files.keep_if { |file| File.exists? file }
+      files.keep_if { |file| File.exist? file }
       new(*files, web_ui:).run
     end
 
@@ -31,7 +31,7 @@ module Lavin
 
     def run
       files.each do |file|
-        if Dir.exists? file
+        if Dir.exist? file
           $LOAD_PATH << file unless $LOAD_PATH.include? file
           Dir.children(file).each { |file| require file }
         else
