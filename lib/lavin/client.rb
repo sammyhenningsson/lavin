@@ -81,8 +81,8 @@ module Lavin
     end
 
     def save_cookie(headers)
-      cookie = headers['Set-Cookie'] || headers['SET-COOKIE'] || headers['set-cookie']
-      self.cookie = cookie if cookie
+      cookies = Array(headers['Set-Cookie'] || headers['SET-COOKIE'] || headers['set-cookie'])
+      self.cookie = cookies.join('; ') unless cookies.empty?
     end
   end
 end
