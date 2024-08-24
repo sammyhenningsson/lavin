@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.name          = "lavin"
   spec.version       = Lavin::VERSION
   spec.authors       = ["Sammy Henningsson"]
-  spec.email         = ["sammy.henningsson@hemnet.se"]
+  spec.email         = ["sammy.henningsson@hey.com"]
 
   spec.summary       = "A framework for loadtesting sites."
   spec.homepage      = "https://github.com/sammyhenningsson/lavin"
